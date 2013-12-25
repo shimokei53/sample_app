@@ -2,6 +2,8 @@ class UsersController < ApplicationController
   before_action:signed_in_user, only: [:index, :edit, :update, :destroy]
   before_action:correct_user,   only: [:edit, :update]
   before_action:admin_user,   only: :destroy
+  before_action:no_signed_in_user,   only: [:new, :create]
+
 
   def index
     @users = User.paginate(page: params[:page])
@@ -12,18 +14,10 @@ class UsersController < ApplicationController
   end
 
   def new
-    if signed_in?
-      flash[:notice] = "You are signed in. If you were new user, please sign out now."
-      redirect_to root_path
-    end
     @user = User.new
   end
 
   def create
-    if signed_in?
-      flash[:notice] = "You are signed in. If you were new user, please sign out now."
-      redirect_to root_path
-    end
     @user = User.new(user_params)
     if @user.save
       sign_in @user
@@ -75,5 +69,9 @@ class UsersController < ApplicationController
 
     def admin_user
       redirect_to(root_path) unless current_user.admin?
+    end
+
+    def no_signed_in_user
+      redirect_to root_path, notice: "You are signed in. If you were new user, please sign out now." if signed_in?
     end
 end
