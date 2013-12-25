@@ -46,6 +46,12 @@ describe "User Pages" do
           end.to change(User, :count).by(-1)
         end
         it { should_not have_link('delete', href: user_path(admin)) }
+
+        describe "delete himself" do
+          it "should not be possible" do
+            expect { delete user_path(admin) }.to_not change(User, :count).by(-1)
+          end
+        end
       end
     end
   end
