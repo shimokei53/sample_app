@@ -12,10 +12,18 @@ class UsersController < ApplicationController
   end
 
   def new
+    if signed_in?
+      flash[:notice] = "You are signed in. If you were new user, please sign out now."
+      redirect_to root_path
+    end
     @user = User.new
   end
 
   def create
+    if signed_in?
+      flash[:notice] = "You are signed in. If you were new user, please sign out now."
+      redirect_to root_path
+    end
     @user = User.new(user_params)
     if @user.save
       sign_in @user
