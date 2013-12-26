@@ -57,7 +57,7 @@ describe "AuthenticationPages" do
       describe "in the Users controller" do
         describe "visiting the new page" do
           before { visit new_user_path }
-          it { should have_content('This is the home page') }
+          it { should have_content(user.name) }
         end
       end
     end
@@ -119,6 +119,18 @@ describe "AuthenticationPages" do
               expect(page).to have_title(user.name)
             end
           end
+        end
+      end
+
+      describe "in the Microposts controller" do
+        describe "submitting to the create action" do
+          before { post microposts_path }
+          specify { expect(response).to redirect_to(signin_path) }
+        end
+
+        describe "submitting to the destroy action" do
+          before { delete micropost_path(FactoryGirl.create(:micropost)) }
+          specify { expect(response).to redirect_to(signin_path) }
         end
       end
     end
